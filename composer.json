@@ -11,8 +11,8 @@
     }
   ],
   "require": {
-    "php": ">=5.5",
-    "symfony/symfony": "3.*",
+    "php": ">=5.4",
+    "symfony/symfony": ">=2.8"
   },
   "autoload": {
     "psr-0": { "PRayno\\CasAuthBundle": "" }
