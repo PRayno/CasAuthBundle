@@ -28,6 +28,15 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('xml_namespace')
                     ->defaultValue('cas')
                 ->end()
+                ->scalarNode('username_attribute')
+                    ->defaultValue('user')
+                ->end()
+                ->scalarNode('query_ticket_parameter')
+                    ->defaultValue('ticket')
+                ->end()
+                ->scalarNode('query_service_parameter')
+                    ->defaultValue('service')
+                ->end()
             ->end()
         ;
 

@@ -16,12 +16,18 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     private $server_login_url;
     private $server_validation_url;
     private $xml_namespace;
+    private $username_attribute;
+    private $query_ticket_parameter;
+    private $query_service_parameter;
 
     public function __construct($config)
     {
         $this->server_login_url = $config['server_login_url'];
         $this->server_validation_url = $config['server_validation_url'];
         $this->xml_namespace = $config['xml_namespace'];
+        $this->username_attribute = $config['username_attribute'];
+        $this->query_service_parameter = $config['query_service_parameter'];
+        $this->query_ticket_parameter = $config['query_ticket_parameter'];
     }
 
     /**
@@ -30,10 +36,11 @@ class CasAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        if ($request->get('ticket'))
+        if ($request->get($this->query_ticket_parameter))
         {
             // Validate ticket
-            $string = file_get_contents($this->server_validation_url.'?ticket='.$request->get('ticket').'&service='.$request->getUri());
+            $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.$request->get($this->query_ticket_parameter).'&'.$this->query_service_parameter.'='.$request->getUri();
+            $string = file_get_contents($url);
 
             $xml = new \SimpleXMLElement($string, 0, false, $this->xml_namespace, TRUE);
 
@@ -48,8 +55,8 @@ class CasAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        if (isset($credentials['user']))
-            return $userProvider->loadUserByUsername($credentials['user']);
+        if (isset($credentials[$this->username_attribute]))
+            return $userProvider->loadUserByUsername($credentials[$this->username_attribute]);
         else
             return false;
     }
@@ -78,7 +85,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new RedirectResponse($this->server_login_url.'?service='.$request->getUri());
+        return new RedirectResponse($this->server_login_url.'?'.$this->query_service_parameter.'='.$request->getUri());
     }
 
     public function supportsRememberMe()
