@@ -17,7 +17,7 @@
   "autoload": {
     "psr-0": { "PRayno\\CasAuthBundle": "" }
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "target-dir": "PRayno/CasAuthBundle",
   "extra": {
   }
