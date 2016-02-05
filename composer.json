@@ -11,13 +11,11 @@
     }
   ],
   "require": {
-    "php": ">=5.4",
     "symfony/symfony": ">=2.8"
   },
   "autoload": {
     "psr-0": { "PRayno\\CasAuthBundle": "" }
   },
-  "minimum-stability": "stable",
   "target-dir": "PRayno/CasAuthBundle",
   "extra": {
   }
