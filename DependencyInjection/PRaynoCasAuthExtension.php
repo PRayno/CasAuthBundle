@@ -3,7 +3,6 @@
 namespace PRayno\CasAuthBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -22,9 +21,11 @@ class PRaynoCasAuthExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $authenticator = $container->register('prayno.cas_authenticator','PRayno\CasAuthBundle\Security\CasAuthenticator');
+        $authenticator = $container->register('prayno.cas_authenticator',
+            'PRayno\CasAuthBundle\Security\CasAuthenticator');
         $authenticator->setArguments(array($config));
 
-        $provider = $container->register('prayno.cas_user_provider','PRayno\CasAuthBundle\Security\User\CasUserProvider');
+        $container->register('prayno.cas_user_provider',
+            'PRayno\CasAuthBundle\Security\User\CasUserProvider');
     }
 }
