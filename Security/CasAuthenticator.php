@@ -2,6 +2,7 @@
 // src/AppBundle/Security/TokenAuthenticator.php
 namespace PRayno\CasAuthBundle\Security;
 
+use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,12 +14,13 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class CasAuthenticator extends AbstractGuardAuthenticator
 {
-    private $server_login_url;
-    private $server_validation_url;
-    private $xml_namespace;
-    private $username_attribute;
-    private $query_ticket_parameter;
-    private $query_service_parameter;
+    protected $server_login_url;
+    protected $server_validation_url;
+    protected $xml_namespace;
+    protected $username_attribute;
+    protected $query_ticket_parameter;
+    protected $query_service_parameter;
+    protected $options;
 
     public function __construct($config)
     {
@@ -28,6 +30,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         $this->username_attribute = $config['username_attribute'];
         $this->query_service_parameter = $config['query_service_parameter'];
         $this->query_ticket_parameter = $config['query_ticket_parameter'];
+        $this->options = $config['options'];
     }
 
     /**
@@ -36,16 +39,20 @@ class CasAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        if ($request->get($this->query_ticket_parameter))
-        {
+        if ($request->get($this->query_ticket_parameter)) {
             // Validate ticket
-            $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.$request->get($this->query_ticket_parameter).'&'.$this->query_service_parameter.'='.$request->getUri();
-            $string = file_get_contents($url);
+            $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.
+                $request->get($this->query_ticket_parameter).'&'.
+                $this->query_service_parameter.'='.$request->getUri();
 
-            $xml = new \SimpleXMLElement($string, 0, false, $this->xml_namespace, TRUE);
+            $client = new Client();
+            $response = $client->request('GET', $url, ['verify' => $this->options]);
 
-            if (isset($xml->authenticationSuccess))
-            {
+            $string = $response->getBody()->getContents();
+
+            $xml = new \SimpleXMLElement($string, 0, false, $this->xml_namespace, true);
+
+            if (isset($xml->authenticationSuccess)) {
                 return (array) $xml->authenticationSuccess;
             }
         }
@@ -55,10 +62,11 @@ class CasAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        if (isset($credentials[$this->username_attribute]))
+        if (isset($credentials[$this->username_attribute])) {
             return $userProvider->loadUserByUsername($credentials[$this->username_attribute]);
-        else
+        } else {
             return false;
+        }
     }
 
     public function checkCredentials($credentials, UserInterface $user)
