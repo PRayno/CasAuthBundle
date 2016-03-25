@@ -46,7 +46,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
                 $this->query_service_parameter.'='.$request->getUri();
 
             $client = new Client();
-            $response = $client->request('GET', $url, ['verify' => $this->options]);
+            $response = $client->request('GET', $url, $this->options);
 
             $string = $response->getBody()->getContents();
 
