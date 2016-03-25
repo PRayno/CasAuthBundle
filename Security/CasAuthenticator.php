@@ -65,7 +65,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         if (isset($credentials[$this->username_attribute])) {
             return $userProvider->loadUserByUsername($credentials[$this->username_attribute]);
         } else {
-            return false;
+            return null;
         }
     }
 
