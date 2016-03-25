@@ -30,7 +30,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('options')
                     ->addDefaultsIfNotSet()
-                    ->defaultValue([])
                 ->end()
                 ->scalarNode('username_attribute')
                     ->defaultValue('user')
