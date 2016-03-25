@@ -35,8 +35,9 @@ p_rayno_cas_auth:
     server_validation_url: https://mycasserver/cas/serviceValidate
     server_logout_url: https://mycasserver/cas/logout
     xml_namespace: cas
+    options:[] see http://docs.guzzlephp.org/en/latest/request-options.html
 ```
-Note : the last parameter is optional
+Note : the xml_namespace and options parameters are optionals
 
 Modify your security.xml with the following values (the provider in the following settings should not be used as it's just a very basic example) :
 ```yaml
