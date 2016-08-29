@@ -43,7 +43,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
             // Validate ticket
             $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.
                 $request->get($this->query_ticket_parameter).'&'.
-                $this->query_service_parameter.'='.$this->removeCasTicket($request->getUri());
+                $this->query_service_parameter.'='.urlencode($this->removeCasTicket($request->getUri()));
 
             $client = new Client();
             $response = $client->request('GET', $url, $this->options);
@@ -99,7 +99,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new RedirectResponse($this->server_login_url.'?'.$this->query_service_parameter.'='.$request->getUri());
+        return new RedirectResponse($this->server_login_url.'?'.$this->query_service_parameter.'='.urlencode($request->getUri()));
     }
 
     public function supportsRememberMe()
