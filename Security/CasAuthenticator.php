@@ -43,7 +43,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
             // Validate ticket
             $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.
                 $request->get($this->query_ticket_parameter).'&'.
-                $this->query_service_parameter.'='.$request->getUri();
+                $this->query_service_parameter.'='.$this->removeCasTicket($request->getUri());
 
             $client = new Client();
             $response = $client->request('GET', $url, $this->options);
