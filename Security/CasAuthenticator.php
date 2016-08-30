@@ -22,6 +22,10 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     protected $query_service_parameter;
     protected $options;
 
+    /**
+     * Process configuration
+     * @param array $config
+     */
     public function __construct($config)
     {
         $this->server_login_url = $config['server_login_url'];
@@ -60,6 +64,12 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         return null;
     }
 
+    /**
+     * Calls the UserProvider providing a valid User
+     * @param array $credentials
+     * @param UserProviderInterface $userProvider
+     * @return bool
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         if (isset($credentials[$this->username_attribute])) {
@@ -69,11 +79,24 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         }
     }
 
+    /**
+     * Mandatory but not in use in a remote authentication
+     * @param $credentials
+     * @param UserInterface $user
+     * @return bool
+     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         return true;
     }
 
+    /**
+     * Mandatory but not in use in a remote authentication
+     * @param Request $request
+     * @param TokenInterface $token
+     * @param $providerKey
+     * @return null
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         // If authentication was successful, redirect to the current URI with
@@ -85,6 +108,12 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         }
     }
 
+    /**
+     * Mandatory but not in use in a remote authentication
+     * @param Request $request
+     * @param AuthenticationException $exception
+     * @return JsonResponse
+     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         $data = array(
@@ -95,13 +124,17 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Called when authentication is needed, but it's not sent
+     * Called when authentication is needed, redirect to your CAS server authentication form
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
         return new RedirectResponse($this->server_login_url.'?'.$this->query_service_parameter.'='.urlencode($request->getUri()));
     }
 
+    /**
+     * Mandatory but not in use in a remote authentication
+     * @return bool
+     */
     public function supportsRememberMe()
     {
         return false;

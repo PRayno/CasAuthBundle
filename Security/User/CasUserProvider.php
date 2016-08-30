@@ -9,6 +9,12 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 class CasUserProvider implements UserProviderInterface
 {
+    /**
+     * Provides the authenticated user a ROLE_USER
+     * @param $username
+     * @return CasUser
+     * @throws UsernameNotFoundException
+     */
     public function loadUserByUsername($username)
     {
         if ($username) {
@@ -24,6 +30,12 @@ class CasUserProvider implements UserProviderInterface
         );
     }
 
+    /**
+     * @param UserInterface $user
+     * @return CasUser
+     * @throws UnsupportedUserException
+     * @throws UsernameNotFoundException
+     */
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof CasUser) {
@@ -35,6 +47,10 @@ class CasUserProvider implements UserProviderInterface
         return $this->loadUserByUsername($user->getUsername());
     }
 
+    /**
+     * @param $class
+     * @return bool
+     */
     public function supportsClass($class)
     {
         return $class === 'PRayno\CasAuthBundle\Security\User\CasUser';

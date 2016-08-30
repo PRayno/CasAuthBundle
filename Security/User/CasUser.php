@@ -12,6 +12,12 @@ class CasUser implements UserInterface
     private $salt;
     private $roles;
 
+    /**
+     * @param $username
+     * @param $password
+     * @param $salt
+     * @param array $roles
+     */
     public function __construct($username, $password, $salt, array $roles)
     {
         $this->username = $username;
@@ -20,26 +26,41 @@ class CasUser implements UserInterface
         $this->roles = $roles;
     }
 
+    /**
+     * @return array
+     */
     public function getRoles()
     {
         return $this->roles;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPassword()
     {
         return $this->password;
     }
 
+    /**
+     * @return mixed
+     */
     public function getSalt()
     {
         return $this->salt;
     }
 
+    /**
+     * @return mixed
+     */
     public function getUsername()
     {
         return $this->username;
     }
 
+    /**
+     *
+     */
     public function eraseCredentials()
     {
 
