@@ -91,9 +91,9 @@ class CasAuthenticatorTest extends \PHPUnit_Framework_TestCase {
         $user = $this->authenticator->getUser($credentials, $this->provider);
         $this->assertEquals('testuser', $user->getUsername());
         $this->assertEquals(array('ROLE_USER'), $user->getRoles());
-        $this->assertEquals('Smith', $user->surname);
-        $this->assertEquals('John', $user->givenName);
-        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->memberOf);
+        $this->assertEquals('Smith', $user->getAttribute('surname'));
+        $this->assertEquals('John', $user->getAttribute('givenName'));
+        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->getAttribute('memberOf'));
     }
 
     public function test_get_user_with_name_value_attributes() {
@@ -125,9 +125,9 @@ class CasAuthenticatorTest extends \PHPUnit_Framework_TestCase {
         $user = $this->authenticator->getUser($credentials, $this->provider);
         $this->assertEquals('testuser', $user->getUsername());
         $this->assertEquals(array('ROLE_USER'), $user->getRoles());
-        $this->assertEquals('Smith', $user->surname);
-        $this->assertEquals('John', $user->givenName);
-        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->memberOf);
+        $this->assertEquals('Smith', $user->getAttribute('surname'));
+        $this->assertEquals('John', $user->getAttribute('givenName'));
+        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->getAttribute('memberOf'));
     }
 
     public function test_get_user_with_rubycas_attributes() {
@@ -159,9 +159,9 @@ class CasAuthenticatorTest extends \PHPUnit_Framework_TestCase {
         $user = $this->authenticator->getUser($credentials, $this->provider);
         $this->assertEquals('testuser', $user->getUsername());
         $this->assertEquals(array('ROLE_USER'), $user->getRoles());
-        $this->assertEquals('Smith', $user->surname);
-        $this->assertEquals('John', $user->givenName);
-        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->memberOf);
+        $this->assertEquals('Smith', $user->getAttribute('surname'));
+        $this->assertEquals('John', $user->getAttribute('givenName'));
+        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->getAttribute('memberOf'));
     }
 
 

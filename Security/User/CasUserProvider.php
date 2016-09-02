@@ -36,10 +36,13 @@ class CasUserProvider implements UserProviderInterface, CasUserCredentialStoreIn
             $salt = "";
             $roles = ["ROLE_USER"];
 
-            $user = new CasUser($username, $password, $salt, $roles);
             if (!empty($this->user_credentials[$username])) {
-              $this->populateCasAttributes($user, $this->user_credentials[$username]);
+                $attributes = $this->getCasAttributes($this->user_credentials[$username]);
+            } else {
+                $attributes = array();
             }
+            $user = new CasUser($username, $password, $salt, $roles, $attributes);
+
             return $user;
         }
 
@@ -75,10 +78,10 @@ class CasUserProvider implements UserProviderInterface, CasUserCredentialStoreIn
     }
 
     /**
-     * @param UserInterface $user
      * @param $credentials
+     * @retun array
      */
-    protected function populateCasAttributes(UserInterface $user, $credentials) {
+    protected function getCasAttributes($credentials) {
         $attras = array();
 
         // "Jasig Style" & CAS 3.0 Attributes:
@@ -182,11 +185,6 @@ class CasUserProvider implements UserProviderInterface, CasUserCredentialStoreIn
             }
         }
 
-        // Add the attributes to the user object.
-        foreach ($attras as $name => $value) {
-            if (!isset($user->$name)) {
-                $user->$name = $value;
-            }
-        }
+        return $attras;
     }
 }
