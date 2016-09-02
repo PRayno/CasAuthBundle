@@ -60,4 +60,109 @@ class CasAuthenticatorTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(array('ROLE_USER'), $user->getRoles());
     }
 
+    public function test_get_user_with_jasig_attributes() {
+        // Create a mock response.
+        $response = new Response(
+            200,
+            array('Content-Type' => 'text/xml'),
+            '<?xml version="1.0" encoding="UTF-8"?>
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+    <cas:authenticationSuccess>
+        <cas:user>testuser</cas:user>
+        <cas:attributes>
+            <cas:surname>Smith</cas:surname>
+            <cas:givenName>John</cas:givenName>
+            <cas:memberOf>CN=Staff,OU=Groups,DC=example,DC=edu</cas:memberOf>
+            <cas:memberOf>CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu</cas:memberOf>
+        </cas:attributes>
+    </cas:authenticationSuccess>
+</cas:serviceResponse>'
+        );
+        $this->mockCasServer->append($response);
+
+        $request = Request::create('http://app.example.com/?ticket=ABC123-1', 'GET');
+
+        // Get the credentials.
+        $credentials = $this->authenticator->getCredentials($request);
+        $this->assertNotEmpty($credentials);
+        $this->assertEquals('testuser', $credentials['user']);
+
+        // Get the user object for the credentials.
+        $user = $this->authenticator->getUser($credentials, $this->provider);
+        $this->assertEquals('testuser', $user->getUsername());
+        $this->assertEquals(array('ROLE_USER'), $user->getRoles());
+        $this->assertEquals('Smith', $user->surname);
+        $this->assertEquals('John', $user->givenName);
+        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->memberOf);
+    }
+
+    public function test_get_user_with_name_value_attributes() {
+        // Create a mock response.
+        $response = new Response(
+            200,
+            array('Content-Type' => 'text/xml'),
+            '<?xml version="1.0" encoding="UTF-8"?>
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+    <cas:authenticationSuccess>
+        <cas:user>testuser</cas:user>
+        <cas:attribute name="surname" value="Smith" />
+        <cas:attribute name="givenName" value="John" />
+        <cas:attribute name="memberOf" value="CN=Staff,OU=Groups,DC=example,DC=edu" />
+        <cas:attribute name="memberOf" value="CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu" />
+    </cas:authenticationSuccess>
+</cas:serviceResponse>'
+        );
+        $this->mockCasServer->append($response);
+
+        $request = Request::create('http://app.example.com/?ticket=ABC123-1', 'GET');
+
+        // Get the credentials.
+        $credentials = $this->authenticator->getCredentials($request);
+        $this->assertNotEmpty($credentials);
+        $this->assertEquals('testuser', $credentials['user']);
+
+        // Get the user object for the credentials.
+        $user = $this->authenticator->getUser($credentials, $this->provider);
+        $this->assertEquals('testuser', $user->getUsername());
+        $this->assertEquals(array('ROLE_USER'), $user->getRoles());
+        $this->assertEquals('Smith', $user->surname);
+        $this->assertEquals('John', $user->givenName);
+        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->memberOf);
+    }
+
+    public function test_get_user_with_rubycas_attributes() {
+        // Create a mock response.
+        $response = new Response(
+            200,
+            array('Content-Type' => 'text/xml'),
+            '<?xml version="1.0" encoding="UTF-8"?>
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+    <cas:authenticationSuccess>
+        <cas:user>testuser</cas:user>
+        <cas:surname>Smith</cas:surname>
+        <cas:givenName>John</cas:givenName>
+        <cas:memberOf>CN=Staff,OU=Groups,DC=example,DC=edu</cas:memberOf>
+        <cas:memberOf>CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu</cas:memberOf>
+    </cas:authenticationSuccess>
+</cas:serviceResponse>'
+        );
+        $this->mockCasServer->append($response);
+
+        $request = Request::create('http://app.example.com/?ticket=ABC123-1', 'GET');
+
+        // Get the credentials.
+        $credentials = $this->authenticator->getCredentials($request);
+        $this->assertNotEmpty($credentials);
+        $this->assertEquals('testuser', $credentials['user']);
+
+        // Get the user object for the credentials.
+        $user = $this->authenticator->getUser($credentials, $this->provider);
+        $this->assertEquals('testuser', $user->getUsername());
+        $this->assertEquals(array('ROLE_USER'), $user->getRoles());
+        $this->assertEquals('Smith', $user->surname);
+        $this->assertEquals('John', $user->givenName);
+        $this->assertEquals(array('CN=Staff,OU=Groups,DC=example,DC=edu', 'CN=Spanish Department,OU=Departments,OU=Groups,DC=example,DC=edu'), $user->memberOf);
+    }
+
+
 }

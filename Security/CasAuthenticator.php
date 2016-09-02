@@ -11,6 +11,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use PRayno\CasAuthBundle\Security\User\CasUserCredentialStoreInterface;
 
 class CasAuthenticator extends AbstractGuardAuthenticator
 {
@@ -79,6 +80,9 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         if (isset($credentials[$this->username_attribute])) {
+            if ($userProvider instanceof CasUserCredentialStoreInterface) {
+                $userProvider->storeUserCredentials($credentials);
+            }
             return $userProvider->loadUserByUsername($credentials[$this->username_attribute]);
         } else {
             return null;
