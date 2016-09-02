@@ -39,6 +39,14 @@ p_rayno_cas_auth:
 ```
 Note : the xml_namespace and options parameters are optionals
 
+If you want any to access user attributes from the CAS response, inject the session into the user-provider in services.yml :
+```yaml
+services:
+    prayno.cas_user_provider:
+        class: PRayno\CasAuthBundle\Security\User\CasUserProvider
+        arguments: ['@session']
+```
+
 Modify your security.xml with the following values (the provider in the following settings should not be used as it's just a very basic example) :
 ```yaml
 security:

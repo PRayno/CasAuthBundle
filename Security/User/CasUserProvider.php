@@ -6,20 +6,35 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 class CasUserProvider implements UserProviderInterface, CasUserCredentialStoreInterface
 {
 
-    protected $user_credentials = array();
+    protected $user_attribute_bag;
+
+    /**
+     * @param SessionInterface $session
+     */
+    public function __construct(SessionInterface $session = null) {
+        if (!is_null($session)) {
+            $this->user_attribute_bag = new AttributeBag('PRayno_CasAuthBundle_UserAttributes');
+            $session->registerBag($this->user_attribute_bag);
+        }
+    }
 
     /**
      * @param array $credentials
      */
     public function storeUserCredentials(array $credentials) {
-        if ($credentials['user']) {
-            $this->user_credentials[$credentials['user']] = $credentials;
-        } else {
-            throw new \InvalidArgumentException('Credentials must contain a user property');
+        if (isset($this->user_attribute_bag)) {
+            if ($credentials['user']) {
+                $this->user_attribute_bag->set($credentials['user'], $this->getCasAttributes($credentials));
+            } else {
+                throw new \InvalidArgumentException('Credentials must contain a user property');
+            }
         }
     }
 
@@ -36,8 +51,8 @@ class CasUserProvider implements UserProviderInterface, CasUserCredentialStoreIn
             $salt = "";
             $roles = ["ROLE_USER"];
 
-            if (!empty($this->user_credentials[$username])) {
-                $attributes = $this->getCasAttributes($this->user_credentials[$username]);
+            if (isset($this->user_attribute_bag) && $this->user_attribute_bag->has($username)) {
+                $attributes = $this->user_attribute_bag->get($username);
             } else {
                 $attributes = array();
             }

@@ -9,6 +9,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class CasAuthenticatorTest extends \PHPUnit_Framework_TestCase {
 
@@ -30,7 +32,7 @@ class CasAuthenticatorTest extends \PHPUnit_Framework_TestCase {
             ),
             $client);
 
-        $this->provider = new CasUserProvider();
+        $this->provider = new CasUserProvider(new Session(new MockArraySessionStorage()));
       }
 
     public function test_get_user_with_name_only() {
