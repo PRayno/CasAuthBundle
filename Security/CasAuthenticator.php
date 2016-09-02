@@ -11,6 +11,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use PRayno\CasAuthBundle\Security\User\CasUserCredentialStoreInterface;
 
 class CasAuthenticator extends AbstractGuardAuthenticator
 {
@@ -21,12 +22,14 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     protected $query_ticket_parameter;
     protected $query_service_parameter;
     protected $options;
+    protected $client;
 
     /**
      * Process configuration
      * @param array $config
+     * @param optional Client $client
      */
-    public function __construct($config)
+    public function __construct($config, Client $client = null)
     {
         $this->server_login_url = $config['server_login_url'];
         $this->server_validation_url = $config['server_validation_url'];
@@ -35,6 +38,11 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         $this->query_service_parameter = $config['query_service_parameter'];
         $this->query_ticket_parameter = $config['query_ticket_parameter'];
         $this->options = $config['options'];
+        if (is_null($client)) {
+            $this->client = new Client();
+        } else {
+            $this->client = $client;
+        }
     }
 
     /**
@@ -49,8 +57,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
                 $request->get($this->query_ticket_parameter).'&'.
                 $this->query_service_parameter.'='.urlencode($this->removeCasTicket($request->getUri()));
 
-            $client = new Client();
-            $response = $client->request('GET', $url, $this->options);
+            $response = $this->client->request('GET', $url, $this->options);
 
             $string = $response->getBody()->getContents();
 
@@ -73,6 +80,9 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         if (isset($credentials[$this->username_attribute])) {
+            if ($userProvider instanceof CasUserCredentialStoreInterface) {
+                $userProvider->storeUserCredentials($credentials);
+            }
             return $userProvider->loadUserByUsername($credentials[$this->username_attribute]);
         } else {
             return null;
