@@ -38,30 +38,39 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
+     * Does the authenticator support the given Request?
+     *
+     * If this returns false, the authenticator will be skipped.
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    public function supports(Request $request)
+    {
+        return (bool) $request->get($this->query_ticket_parameter);
+    }
+
+    /**
      * Called on every request. Return whatever credentials you want,
      * or null to stop authentication.
      */
     public function getCredentials(Request $request)
     {
-        if ($request->get($this->query_ticket_parameter)) {
-            // Validate ticket
-            $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.
-                $request->get($this->query_ticket_parameter).'&'.
-                $this->query_service_parameter.'='.urlencode($this->removeCasTicket($request->getUri()));
+        $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.
+            $request->get($this->query_ticket_parameter).'&'.
+            $this->query_service_parameter.'='.urlencode($this->removeCasTicket($request->getUri()));
 
-            $client = new Client();
-            $response = $client->request('GET', $url, $this->options);
+        $client = new Client();
+        $response = $client->request('GET', $url, $this->options);
 
-            $string = $response->getBody()->getContents();
+        $string = $response->getBody()->getContents();
 
-            $xml = new \SimpleXMLElement($string, 0, false, $this->xml_namespace, true);
+        $xml = new \SimpleXMLElement($string, 0, false, $this->xml_namespace, true);
 
-            if (isset($xml->authenticationSuccess)) {
-                return (array) $xml->authenticationSuccess;
-            }
+        if (isset($xml->authenticationSuccess)) {
+            return (array) $xml->authenticationSuccess;
         }
-
-        return null;
     }
 
     /**

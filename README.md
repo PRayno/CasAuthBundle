@@ -1,7 +1,7 @@
 # CasAuthBundle
-Basic CAS (SSO) authenticator for Symfony 3
+Basic CAS (SSO) authenticator for Symfony 3 and 4
 
-This bundle provides a -very- basic CAS (http://jasig.github.io/cas/4.1.x/index.html) authentication client for Symfony 3.
+This bundle provides a -very- basic CAS (http://jasig.github.io/cas/4.1.x/index.html) authentication client for Symfony 3 and 4.
 
 ## Installation
 
