@@ -28,7 +28,7 @@ public function registerBundles()
 }
 ```
 
-Add your settings to your config.yml :
+In config.yml (Symfony 3) or config/packages/p_rayno_cas_auth.yaml (create this file in Symfony 4), add these settings :
 ```yaml
 p_rayno_cas_auth:
     server_login_url: https://mycasserver/cas/
@@ -39,7 +39,7 @@ p_rayno_cas_auth:
 ```
 Note : the xml_namespace and options parameters are optionals
 
-Modify your security.xml with the following values (the provider in the following settings should not be used as it's just a very basic example) :
+Modify your security.yml with the following values (the provider in the following settings should not be used as it's just a very basic example ; in production, create your own UserProvider and add its service name in providers:cas:id) :
 ```yaml
 security:
     providers:
