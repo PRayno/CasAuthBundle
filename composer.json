@@ -1,13 +1,13 @@
 {
   "name": "prayno/casauth-bundle",
   "type": "symfony-bundle",
-  "description": "Basic CAS (SSO) authenticator for Symfony 3",
-  "keywords": ["PRayno", "CAS", "SSO", "Symfony 3", "Guard"],
-  "license": "GPL",
+  "description": "Basic CAS (SSO) authenticator for Symfony 3 and 4",
+  "keywords": ["PRayno", "CAS", "SSO", "Symfony 3", "Guard", "Symfony 4"],
+  "license": "MIT",
   "authors": [
     {
       "name": "Pierre Raynaud",
-      "email": "pierre.raynaud@udamail.fr"
+      "email": "pierre.raynaud@uca.fr"
     }
   ],
   "require": {

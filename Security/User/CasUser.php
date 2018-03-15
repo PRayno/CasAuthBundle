@@ -13,9 +13,9 @@ class CasUser implements UserInterface
     private $roles;
 
     /**
-     * @param $username
-     * @param $password
-     * @param $salt
+     * @param string $username
+     * @param string $password
+     * @param string $salt
      * @param array $roles
      */
     public function __construct($username, $password, $salt, array $roles)
