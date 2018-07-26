@@ -3,6 +3,8 @@
 namespace PRayno\CasAuthBundle\Security;
 
 use GuzzleHttp\Client;
+use PRayno\CasAuthBundle\Event\CASAuthenticationFailureEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,11 +24,13 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     protected $query_service_parameter;
     protected $options;
 
+    private $eventDispatcher;
+
     /**
      * Process configuration
      * @param array $config
      */
-    public function __construct($config)
+    public function __construct($config, EventDispatcherInterface $eventDispatcher)
     {
         $this->server_login_url = $config['server_login_url'];
         $this->server_validation_url = $config['server_validation_url'];
@@ -35,6 +39,8 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         $this->query_service_parameter = $config['query_service_parameter'];
         $this->query_ticket_parameter = $config['query_ticket_parameter'];
         $this->options = $config['options'];
+
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -128,8 +134,12 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         $data = array(
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
         );
+        $def_response = new JsonResponse($data, 403);
 
-        return new JsonResponse($data, 403);
+        $event = new CASAuthenticationFailureEvent($request,$exception, $def_response);
+        $this->eventDispatcher->dispatch(CASAuthenticationFailureEvent::POST_MESSAGE, $event);
+
+        return $event->getResponse();
     }
 
     /**

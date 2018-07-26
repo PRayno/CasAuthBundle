@@ -21,7 +21,7 @@ class PRaynoCasAuthExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $authenticator = $container->register('prayno.cas_authenticator',
+        $authenticator = $container->autowire('prayno.cas_authenticator',
             'PRayno\CasAuthBundle\Security\CasAuthenticator');
         $authenticator->setArguments(array($config));
 
