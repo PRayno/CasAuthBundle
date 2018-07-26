@@ -62,3 +62,36 @@ security:
   ```
   
   And voila ! Your secured route should redirect you to your CAS login page which should authenticate you.
+
+
+## CAS global logout option
+
+If you want your users to logout from the remote CAS server when logging out from your app, you should apply the following settings :
+
+security.yaml:
+
+```yaml
+# ...
+    firewalls:
+        # ...
+        main:
+          # ...
+          logout:
+            path: /logout
+            success_handler: PRayno\CasAuthBundle\Event\LogoutSuccessHandler
+  ```
+  
+services.yaml
+
+```yaml
+# ...
+services:
+    # ...
+    PRayno\CasAuthBundle\Event\LogoutSuccessHandler:
+        arguments:
+            $logoutUrl: "%cas_logout_url%"
+  ```
+  
+Of course, you must set a "cas_logout_url" parameter in your app (eg. https://my_remote_cas_server/logout)
+
+Don't forget to define a /logout route in your app 
