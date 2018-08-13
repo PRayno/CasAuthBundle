@@ -94,4 +94,27 @@ services:
   
 Of course, you must set a "cas_logout_url" parameter in your app (eg. https://my_remote_cas_server/logout)
 
-Don't forget to define a /logout route in your app 
+Don't forget to define a /logout route in your app.
+
+## CAS Single Logout
+
+CAS servers will signal your app when a user logs out. If you want
+to terminate user sessions when that occurs, add these settings:
+
+services.yaml
+
+```yaml
+    PRayno\CasAuthBundle\Event\SingleLogoutEventSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    PRayno\CasAuthBundle\Session\SessionTerminatorInterface:
+        class: PRayno\CasAuthBundle\Session\FileSystemSessionTerminator
+        arguments:
+            $logger: '@logger'
+```
+
+Note, the provided FileSystemSessionTerminator is intended for the simple
+case where sessions are stored on the filesystem. If your needs
+are more complex, such as with database session storage, implement
+SessionTerminatorInterface and modify the service definition above.
