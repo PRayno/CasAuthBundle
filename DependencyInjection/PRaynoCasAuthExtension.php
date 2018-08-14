@@ -27,5 +27,16 @@ class PRaynoCasAuthExtension extends Extension
 
         $container->register('prayno.cas_user_provider',
             'PRayno\CasAuthBundle\Security\User\CasUserProvider');
+
+        if ($config['single_logout']) {
+            $sessionTerminator = $container->register('prayno.single_logout_session_terminator',
+                'PRayno\CasAuthBundle\Session\FileSystemSessionTerminator')
+                ->setPrivate(true);
+            $container->register('prayno.single_logout_subscriber',
+                'PRayno\CasAuthBundle\Event\SingleLogoutEventSubscriber')
+                ->addArgument($sessionTerminator)
+                ->addTag('kernel.event_subscriber')
+                ->setPrivate(true);
+        }
     }
 }

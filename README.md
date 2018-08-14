@@ -34,6 +34,7 @@ p_rayno_cas_auth:
     server_login_url: https://mycasserver/cas/
     server_validation_url: https://mycasserver/cas/serviceValidate
     server_logout_url: https://mycasserver/cas/logout
+    single_logout: false
     xml_namespace: cas
     options:[] see http://docs.guzzlephp.org/en/latest/request-options.html
 ```
@@ -99,22 +100,19 @@ Don't forget to define a /logout route in your app.
 ## CAS Single Logout
 
 CAS servers will signal your app when a user logs out. If you want
-to terminate user sessions when that occurs, add these settings:
+to terminate user sessions when that occurs by adding the following
+configuration.
 
-services.yaml
+In config.yml (Symfony 3) or config/packages/p_rayno_cas_auth.yaml:
 
 ```yaml
-    PRayno\CasAuthBundle\Event\SingleLogoutEventSubscriber:
-        tags:
-            - { name: kernel.event_subscriber }
-
-    PRayno\CasAuthBundle\Session\SessionTerminatorInterface:
-        class: PRayno\CasAuthBundle\Session\FileSystemSessionTerminator
-        arguments:
-            $logger: '@logger'
+p_rayno_cas_auth:
+    single_logout: true
 ```
 
-Note, the provided FileSystemSessionTerminator is intended for the simple
+Note, the provided single logout implementation is intended for the simple
 case where sessions are stored on the filesystem. If your needs
 are more complex, such as with database session storage, implement
-SessionTerminatorInterface and modify the service definition above.
+PRayno\CasAuthBundle\Session\SessionTerminatorInterface and
+[override](https://symfony.com/doc/current/service_container/service_decoration.html)
+the `prayno.single_logout_session_terminator` service with your own.
