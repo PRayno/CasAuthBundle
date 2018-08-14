@@ -50,13 +50,13 @@ class SingleLogoutEventSubscriber implements EventSubscriberInterface
 
     private function processXmlData($xmlData): void
     {
-        $session = $this->extractSession($xmlData);
-        if ($session) {
-            $this->terminateSession($session);
+        $sessionIndex = $this->extractSessionIndex($xmlData);
+        if ($sessionIndex) {
+            $this->terminateSession($sessionIndex);
         }
     }
 
-    private function extractSession($xmlData): ?string
+    private function extractSessionIndex($xmlData): ?string
     {
         $namespaces = $xmlData->getNameSpaces();
         if (isset($namespaces['samlp'])) {
@@ -68,9 +68,9 @@ class SingleLogoutEventSubscriber implements EventSubscriberInterface
         return is_object($element) ? trim((string) $element[0]) : null;
     }
 
-    private function terminateSession(string $session): void
+    private function terminateSession(string $sessionIndex): void
     {
-        $this->sessionTerminator->terminate($session);
+        $this->sessionTerminator->terminate($sessionIndex);
         $this->event->setResponse(new Response());
     }
 }

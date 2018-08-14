@@ -13,9 +13,10 @@ class FileSystemSessionTerminator implements SessionTerminatorInterface
         $this->sessionSavePath = $sessionSavePath;
     }
 
-    public function terminate(string $sessionId): void
+    public function terminate(string $sessionIndex): void
     {
-        $file = $this->sessionSavePath.'/sess_'.$sessionId;
+        // @TODO Identify the session file to delete.
+        $file = '';
         if (file_exists($file)) {
             unlink($file);
         }
