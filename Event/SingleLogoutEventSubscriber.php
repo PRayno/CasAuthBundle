@@ -25,7 +25,9 @@ class SingleLogoutEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => ['singleLogout']
+            KernelEvents::REQUEST => [
+                ['singleLogout', 192],
+            ]
         ];
     }
 
