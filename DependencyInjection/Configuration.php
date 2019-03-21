@@ -17,30 +17,29 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('p_rayno_cas_auth');
+        $treeBuilder = new TreeBuilder('p_rayno_cas_auth');
 
-        $rootNode
+        $treeBuilder->getRootNode()
             ->children()
-                ->scalarNode('server_login_url')->end()
-                ->scalarNode('server_validation_url')->end()
-                ->scalarNode('server_logout_url')->end()
-                ->scalarNode('xml_namespace')
-                    ->defaultValue('cas')
-                ->end()
-                ->arrayNode('options')
-                    ->prototype('scalar')->end()
-                    ->defaultValue(array())
-                ->end()
-                ->scalarNode('username_attribute')
-                    ->defaultValue('user')
-                ->end()
-                ->scalarNode('query_ticket_parameter')
-                    ->defaultValue('ticket')
-                ->end()
-                ->scalarNode('query_service_parameter')
-                    ->defaultValue('service')
-                ->end()
+            ->scalarNode('server_login_url')->end()
+            ->scalarNode('server_validation_url')->end()
+            ->scalarNode('server_logout_url')->end()
+            ->scalarNode('xml_namespace')
+            ->defaultValue('cas')
+            ->end()
+            ->arrayNode('options')
+            ->prototype('scalar')->end()
+            ->defaultValue(array())
+            ->end()
+            ->scalarNode('username_attribute')
+            ->defaultValue('user')
+            ->end()
+            ->scalarNode('query_ticket_parameter')
+            ->defaultValue('ticket')
+            ->end()
+            ->scalarNode('query_service_parameter')
+            ->defaultValue('service')
+            ->end()
             ->end()
         ;
 
