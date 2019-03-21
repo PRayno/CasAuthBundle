@@ -58,8 +58,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Called on every request. Return whatever credentials you want,
-     * or null to stop authentication.
+     * {@inheritdoc}
      */
     public function getCredentials(Request $request)
     {
@@ -77,6 +76,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
         if (isset($xml->authenticationSuccess)) {
             return (array) $xml->authenticationSuccess;
         }
+        return [];
     }
 
     /**
