@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('p_rayno_cas_auth');
-        $rootNode = $treeBuilder->root('p_rayno_cas_auth');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
