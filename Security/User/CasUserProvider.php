@@ -2,12 +2,13 @@
 // src/AppBundle/Security/User/CasProvider.php
 namespace PRayno\CasAuthBundle\Security\User;
 
+use Security\User\CasUserProviderInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
-class CasUserProvider implements UserProviderInterface
+class CasUserProvider implements CasUserProviderInterface
 {
     /**
      * Provides the authenticated user a ROLE_USER
@@ -28,6 +29,21 @@ class CasUserProvider implements UserProviderInterface
         throw new UsernameNotFoundException(
             sprintf('Username "%s" does not exist.', $username)
         );
+    }
+
+    /**
+     * @param string $username
+     * @param array $attributes
+     * @return UserInterface|void
+     */
+    public function loadUserByUsernameAndAttributes(string $username, array $attributes)
+    {
+        /**
+         * Instanciate your own User class and set its properties with attributes returned by CAS
+         * $user = new User();
+         * $user->setUsername($username);
+         * $user->setLastname($attibutes['sn']);
+         */
     }
 
     /**
