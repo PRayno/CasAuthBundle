@@ -34,7 +34,7 @@ class CasUserProvider implements CasUserProviderInterface
     /**
      * @param string $username
      * @param array $attributes
-     * @return UserInterface|void
+     * @return CasUser
      */
     public function loadUserByUsernameAndAttributes(string $username, array $attributes)
     {
@@ -43,7 +43,10 @@ class CasUserProvider implements CasUserProviderInterface
          * $user = new User();
          * $user->setUsername($username);
          * $user->setLastname($attibutes['sn']);
+         * return $user;
          */
+
+        return $this->loadUserByUsername($username);
     }
 
     /**

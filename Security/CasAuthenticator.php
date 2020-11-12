@@ -82,7 +82,7 @@ class CasAuthenticator extends AbstractGuardAuthenticator
 
     /**
      * Calls the UserProvider providing a valid User
-     * @param mixed $credentials
+     * @param array $credentials
      * @param UserProviderInterface $userProvider
      * @return UserInterface|null
      */
