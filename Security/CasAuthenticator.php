@@ -4,6 +4,7 @@ namespace PRayno\CasAuthBundle\Security;
 
 use GuzzleHttp\Client;
 use PRayno\CasAuthBundle\Event\CASAuthenticationFailureEvent;
+use PRayno\CasAuthBundle\Security\User\CasUserProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,12 +84,20 @@ class CasAuthenticator extends AbstractGuardAuthenticator
      * Calls the UserProvider providing a valid User
      * @param array $credentials
      * @param UserProviderInterface $userProvider
-     * @return bool
+     * @return UserInterface|null
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         if (isset($credentials[$this->username_attribute])) {
-            return $userProvider->loadUserByUsername($credentials[$this->username_attribute]);
+            if($userProvider instanceof CasUserProviderInterface)
+            {
+                $attributes = (isset($credentials['attributes']))? (array)$credentials['attributes'] : [];
+                return $userProvider->loadUserByUsernameAndAttributes($credentials[$this->username_attribute], $attributes);
+            }
+            else
+            {
+                return $userProvider->loadUserByUsername($credentials[$this->username_attribute]);
+            }
         } else {
             return null;
         }
